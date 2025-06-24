@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Funcionario;
+use Exception;
+
+class FuncionarioService
+{
+    public function getFuncionarioById($id)
+    {
+        return Funcionario::findOrFail($id);
+    }
+
+    public function getAllFuncionarios()
+    {
+        return Funcionario::all();
+    }
+
+    public function insertFuncionario(array $data)
+    {
+        return Funcionario::create([
+            'user_id'       => $data['user_id'],
+            'setor_id'      => $data['setor_id'],
+            'cargo'         => $data['cargo'],
+            'salario'       => $data['salario'],
+            'data_admissao' => $data['data_admissao'],
+            'data_desligamento' => $data['data_desligamento'] ?? null,
+            'status_id'        => $data['status_id']
+        ]);
+    }
+
+    public function updateFuncionario($id, array $data)
+    {
+        $funcionario = $this->getFuncionarioById($id);
+
+        $funcionario->update([
+            'user_id'       => $data['user_id'],
+            'setor_id'      => $data['setor_id'],
+            'cargo'         => $data['cargo'],
+            'salario'       => $data['salario'],
+            'data_admissao' => $data['data_admissao'],
+            'data_desligamento' => $data['data_desligamento'] ?? null,
+            'status_id'        => $data['status_id']
+        ]);
+
+        return $funcionario;
+    }
+
+    public function deleteFuncionario($id)
+    {
+        $funcionario = $this->getFuncionarioById($id);
+        return $funcionario->delete();
+    }
+}
