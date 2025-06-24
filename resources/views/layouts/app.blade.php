@@ -24,16 +24,33 @@
 
             <div class="collapse navbar-collapse" id="navbarSistema">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('users.painel') ? 'active' : '' }}"
-                            href="{{ route('users.painel') }}">Usuários</a>
+                        <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
+                            href="{{ route('users.painel') }}">
+                            Usuários
+                        </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Relatórios</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Configurações</a></li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('funcionarios.*') ? 'active' : '' }}"
+                            href="{{ route('funcionarios.index') }}">
+                            Funcionários
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('setores.*') ? 'active' : '' }}"
+                            href="{{ route('setores.index') }}">
+                            Setores
+                        </a>
+                    </li>
+
                 </ul>
             </div>
         </div>
     </nav>
+
 
     <div class="content-wrapper">
         <div class="container mt-5 pt-4 pb-4">
@@ -51,7 +68,8 @@
                 <div class="col-md-4 mb-3 mb-md-0">
                     <h5 class="fw-bold text-dark">Navegação</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ route('users.painel') }}" class="text-decoration-none text-secondary">Usuários</a></li>
+                        <li><a href="{{ route('users.painel') }}"
+                                class="text-decoration-none text-secondary">Usuários</a></li>
                         <li><a href="#" class="text-decoration-none text-secondary">Relatórios</a></li>
                         <li><a href="#" class="text-decoration-none text-secondary">Configurações</a></li>
                     </ul>

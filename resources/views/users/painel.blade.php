@@ -63,21 +63,36 @@
                     <div class="col">
                         <div class="card bg-white shadow-sm border-1">
                             <div class="card-body">
-                                <div class="row g-3 align-items-end">
-                                    <div class="col-md-4">
-                                        <label for="tipo_usuario" class="fw-semibold text-dark mb-1">Filtrar por Tipo de
-                                            Usuário</label>
-                                        <div class="input-group shadow-sm">
-                                            <select name="tipo_usuario" id="tipo_usuario" class="form-select">
-                                                <option value="">Todos os Tipos</option>
-                                                @foreach ($tipoUsuarios as $tipoUsuario)
-                                                    <option value="{{ $tipoUsuario->nome }}">{{ $tipoUsuario->nome }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="input-group-text bg-white"><i class="bi bi-funnel"></i></span>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle shadow-sm" type="button"
+                                            id="filtroUsuariosDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Ações e Filtros
+                                        </button>
+                                        <div class="dropdown-menu p-4" style="min-width: 280px;">
+
+                                            <div class="mb-3">
+                                                <label for="tipo_usuario" class="fw-semibold text-dark mb-1">Filtrar por
+                                                    Tipo de Usuário</label>
+                                                <select name="tipo_usuario" id="tipo_usuario" class="form-select">
+                                                    <option value="">Todos os Tipos</option>
+                                                    @foreach ($tipoUsuarios as $tipoUsuario)
+                                                        <option value="{{ $tipoUsuario->nome }}">{{ $tipoUsuario->nome }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="d-grid">
+                                                <a href="{{ route('users.create') }}" class="btn btn-success">
+                                                    <i class="bi bi-plus-circle me-2"></i> Cadastrar Usuário
+                                                </a>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <table class="table table-hover align-middle bg-white">
                                     <thead class="table-light">
