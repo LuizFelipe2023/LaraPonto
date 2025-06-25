@@ -55,4 +55,5 @@ Route::prefix('pontos')->group(function () {
     Route::get('/saida/{funcionarioId}', [PontoController::class, 'createSaida'])->name('pontos.createSaida');
     Route::post('/saida/{pontoId}', [PontoController::class, 'storeSaida'])->name('pontos.storeSaida');
     Route::delete('/{id}', [PontoController::class, 'deletePonto'])->name('pontos.delete');
+    Route::get('/funcionario/{id}', [PontoController::class, 'pontosFuncionario'])->name('pontos.funcionario');
 });

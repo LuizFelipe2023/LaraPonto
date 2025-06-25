@@ -49,8 +49,9 @@ class PontoController extends Controller
     public function storeEntrada(RegistrarEntradaRequest $request): RedirectResponse
     {
         try {
-            $this->pontoService->insertPonto($request->validated());
-            return redirect()->route('pontos.index')->with('success', 'Entrada registrada com sucesso!');
+            $ponto = $this->pontoService->insertPonto($request->validated());
+            return redirect()->route('pontos.funcionario', $ponto->funcionario_id)
+                ->with('success', 'Entrada registrada com sucesso!');
         } catch (Exception $e) {
             Log::error('Erro ao registrar entrada', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Erro ao registrar entrada. Tente novamente.');
@@ -81,7 +82,9 @@ class PontoController extends Controller
     {
         try {
             $this->pontoService->updatePonto($pontoId, $request->validated());
-            return redirect()->route('pontos.index')->with('success', 'Saída registrada com sucesso!');
+            $ponto = $this->pontoService->getPontoById($pontoId);
+            return redirect()->route('pontos.funcionario', $ponto->funcionario_id)
+                ->with('success', 'Saída registrada com sucesso!');
         } catch (Exception $e) {
             Log::error('Erro ao registrar saída', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Erro ao registrar saída. Tente novamente.');
@@ -98,4 +101,20 @@ class PontoController extends Controller
             return redirect()->back()->with('error', 'Erro ao excluir ponto. Tente novamente.');
         }
     }
+    public function pontosFuncionario($id)
+    {
+        try {
+            $funcionario = $this->funcionarioService->getFuncionarioById($id);
+            $pontos = $this->funcionarioService->getPontosByFuncionario($id);
+            return view('pontos.funcionario', compact('funcionario', 'pontos'));
+        } catch (ModelNotFoundException $e) {
+            Log::error('Funcionário não encontrado ao tentar acessar pontos', ['error' => $e->getMessage(), 'funcionario_id' => $id]);
+            return redirect()->route('funcionarios.index')->with('error', 'Funcionário não encontrado.');
+        } catch (Exception $e) {
+            Log::error('Erro inesperado ao carregar pontos do funcionário', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Erro inesperado ao carregar os pontos. Tente novamente.');
+        }
+    }
+
+
 }

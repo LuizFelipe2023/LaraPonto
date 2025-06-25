@@ -20,13 +20,13 @@ class FuncionarioService
     public function insertFuncionario(array $data)
     {
         return Funcionario::create([
-            'user_id'       => $data['user_id'],
-            'setor_id'      => $data['setor_id'],
-            'cargo'         => $data['cargo'],
-            'salario'       => $data['salario'],
+            'user_id' => $data['user_id'],
+            'setor_id' => $data['setor_id'],
+            'cargo' => $data['cargo'],
+            'salario' => $data['salario'],
             'data_admissao' => $data['data_admissao'],
             'data_desligamento' => $data['data_desligamento'] ?? null,
-            'status_id'        => $data['status_id']
+            'status_id' => $data['status_id']
         ]);
     }
 
@@ -35,13 +35,13 @@ class FuncionarioService
         $funcionario = $this->getFuncionarioById($id);
 
         $funcionario->update([
-            'user_id'       => $data['user_id'],
-            'setor_id'      => $data['setor_id'],
-            'cargo'         => $data['cargo'],
-            'salario'       => $data['salario'],
+            'user_id' => $data['user_id'],
+            'setor_id' => $data['setor_id'],
+            'cargo' => $data['cargo'],
+            'salario' => $data['salario'],
             'data_admissao' => $data['data_admissao'],
             'data_desligamento' => $data['data_desligamento'] ?? null,
-            'status_id'        => $data['status_id']
+            'status_id' => $data['status_id']
         ]);
 
         return $funcionario;
@@ -52,4 +52,11 @@ class FuncionarioService
         $funcionario = $this->getFuncionarioById($id);
         return $funcionario->delete();
     }
+
+    public function getPontosByFuncionario(int $funcionarioId)
+    {
+        $funcionario = $this->getFuncionarioById($funcionarioId);
+        return $funcionario->pontos()->orderBy('data', 'desc')->orderBy('hora_entrada', 'desc')->get();
+    }
+
 }
