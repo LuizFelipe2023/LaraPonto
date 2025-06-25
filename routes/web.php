@@ -11,6 +11,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuditController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -45,6 +46,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [SetorController::class, 'editSetor'])->name('edit');
             Route::put('/{id}/update', [SetorController::class, 'updateSetor'])->name('update');
             Route::delete('/{id}/delete', [SetorController::class, 'deleteSetor'])->name('delete');
+
+        });
+
+        Route::prefix('auditorias')->name('audits.')->group(function () {
+            Route::get('/', [AuditController::class, 'index'])->name('index');
+            Route::get('/pdf', [AuditController::class, 'pdf'])->name('pdf');
         });
     });
 
@@ -70,7 +77,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [FaltaController::class, 'edit'])->name('edit');
             Route::put('/{id}/update', [FaltaController::class, 'update'])->name('update');
             Route::delete('/{id}', [FaltaController::class, 'destroy'])->name('destroy');
-            Route::get('/pdf',[FaltaController::class,'pdfFaltas'])->name('pdf');
+            Route::get('/pdf', [FaltaController::class, 'pdfFaltas'])->name('pdf');
         });
 
         Route::prefix('atrasos')->name('atrasos.')->group(function () {
@@ -80,7 +87,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [AtrasoController::class, 'edit'])->name('edit');
             Route::put('/{id}/update', [AtrasoController::class, 'update'])->name('update');
             Route::delete('/{id}', [AtrasoController::class, 'destroy'])->name('destroy');
-            Route::get('/pdf',[AtrasoController::class,'pdfAtrasos'])->name('pdf');
+            Route::get('/pdf', [AtrasoController::class, 'pdfAtrasos'])->name('pdf');
         });
     });
 

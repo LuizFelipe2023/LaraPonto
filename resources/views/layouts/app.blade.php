@@ -35,8 +35,8 @@
                                 'pontos.*',
                                 'faltas.*',
                                 'atrasos.*'
-                            ) ? 'active' : '' }}" href="#" id="gestaoDropdown" role="button"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
+                            ) ? 'active' : '' }}" href="#" id="gestaoDropdown" role="button" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
                                                 Gestão
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="gestaoDropdown">
@@ -54,6 +54,12 @@
                                                         <a class="dropdown-item {{ request()->routeIs('setores.*') ? 'active' : '' }}"
                                                             href="{{ route('setores.index') }}">
                                                             <i class="bi bi-diagram-3-fill me-2"></i>Setores
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {{ request()->routeIs('audits.*') ? 'active' : '' }}"
+                                                            href="{{ route('audits.index') }}">
+                                                            <i class="bi bi-journal-text me-2"></i> Auditorias
                                                         </a>
                                                     </li>
                                                     <li>
@@ -98,12 +104,14 @@
                                 {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                <li>
-                                    <a class="dropdown-item {{ request()->routeIs('pontos.funcionario') ? 'active' : '' }}"
-                                        href="{{ route('pontos.funcionario', Auth::user()->funcionario->id) }}">
-                                        <i class="bi bi-clock-history me-2"></i>Meus Pontos
-                                    </a>
-                                </li>
+                                @if (Auth::user()->funcionario)
+                                    <li>
+                                        <a class="dropdown-item {{ request()->routeIs('pontos.funcionario') ? 'active' : '' }}"
+                                            href="{{ route('pontos.funcionario', Auth::user()->funcionario->id) }}">
+                                            <i class="bi bi-clock-history me-2"></i>Meus Pontos
+                                        </a>
+                                    </li>
+                                @endif
                                 <li>
                                     <a class="dropdown-item {{ request()->routeIs('profile') ? 'active' : '' }}"
                                         href="{{ route('profile') }}">

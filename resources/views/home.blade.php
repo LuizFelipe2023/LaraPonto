@@ -50,6 +50,12 @@
                         'subtitle'=>'Gerencie os atrasos registrados.',
                         'banner'=>'https://images.unsplash.com/photo-1598300052095-c1b9f656cab9?auto=format&fit=crop&w=400&q=80'
                     ],
+                    [
+                        'route'=>'audits.index',
+                        'title'=>'Auditorias',
+                        'subtitle'=>'Visualize os registros de auditoria do sistema.',
+                        'banner'=>'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=400&q=80'
+                    ],
                 ];
             @endphp
 
