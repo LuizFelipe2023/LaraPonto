@@ -24,73 +24,113 @@
 
             <div class="collapse navbar-collapse" id="navbarSistema">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
                     @auth
-                        @if (Auth::user()->tipo_usuario == 1)
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
-                                    href="{{ route('users.painel') }}">
-                                    Usuários
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('setores.*') ? 'active' : '' }}"
-                                    href="{{ route('setores.index') }}">
-                                    Setores
-                                </a>
-                            </li>
-                        @endif
+                        @if(in_array(Auth::user()->tipo_usuario, [1, 2]))
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle {{ request()->routeIs(
+                                'users.*',
+                                'setores.*',
+                                'funcionarios.*',
+                                'pontos.*',
+                                'faltas.*',
+                                'atrasos.*'
+                            ) ? 'active' : '' }}" href="#" id="gestaoDropdown" role="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Gestão
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="gestaoDropdown">
+                                                @if(Auth::user()->tipo_usuario == 1)
+                                                    <li>
+                                                        <h6 class="dropdown-header">Administração</h6>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {{ request()->routeIs('users.*') ? 'active' : '' }}"
+                                                            href="{{ route('users.painel') }}">
+                                                            <i class="bi bi-people-fill me-2"></i>Usuários
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {{ request()->routeIs('setores.*') ? 'active' : '' }}"
+                                                            href="{{ route('setores.index') }}">
+                                                            <i class="bi bi-diagram-3-fill me-2"></i>Setores
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                @endif
 
-                        @if (in_array(Auth::user()->tipo_usuario, [1, 2]))
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('pontos.index') ? 'active' : '' }}"
-                                    href="{{ route('pontos.index') }}">
-                                    Pontos dos Funcionários
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('funcionarios.*') ? 'active' : '' }}"
-                                    href="{{ route('funcionarios.index') }}">
-                                    Funcionários
-                                </a>
-                            </li>
+                                                <li>
+                                                    <h6 class="dropdown-header">Operacional</h6>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item {{ request()->routeIs('funcionarios.*') ? 'active' : '' }}"
+                                                        href="{{ route('funcionarios.index') }}">
+                                                        <i class="bi bi-person-badge-fill me-2"></i>Funcionários
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item {{ request()->routeIs('pontos.*') ? 'active' : '' }}"
+                                                        href="{{ route('pontos.index') }}">
+                                                        <i class="bi bi-clock-fill me-2"></i>Pontos
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item {{ request()->routeIs('faltas.*') ? 'active' : '' }}"
+                                                        href="{{ route('faltas.index') }}">
+                                                        <i class="bi bi-calendar-x-fill me-2"></i>Faltas
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item {{ request()->routeIs('atrasos.*') ? 'active' : '' }}"
+                                                        href="{{ route('atrasos.index') }}">
+                                                        <i class="bi bi-clock-history me-2"></i>Atrasos
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
                         @endif
-
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('pontos.funcionario',Auth::user()->funcionario->id) ? 'active' : '' }}"
-                                href="{{ route('pontos.funcionario',Auth::user()->funcionario->id) }}">
-                                Meus Pontos
-                            </a>
-                        </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('pontos.funcionario', 'profile') ? 'active' : '' }}"
+                                href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{ Auth::user()->name }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('profile') }}">
-                                        Perfil
+                                    <a class="dropdown-item {{ request()->routeIs('pontos.funcionario') ? 'active' : '' }}"
+                                        href="{{ route('pontos.funcionario', Auth::user()->funcionario->id) }}">
+                                        <i class="bi bi-clock-history me-2"></i>Meus Pontos
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#"
+                                    <a class="dropdown-item {{ request()->routeIs('profile') ? 'active' : '' }}"
+                                        href="{{ route('profile') }}">
+                                        <i class="bi bi-person-circle me-2"></i>Perfil
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="#"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        Sair
+                                        <i class="bi bi-box-arrow-right me-2"></i>Sair
                                     </a>
                                 </li>
                             </ul>
                         </li>
                     @endauth
+
                 </ul>
 
                 @auth
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
                     </form>
                 @endauth
             </div>
-
         </div>
     </nav>
 
