@@ -30,7 +30,7 @@ class AuthController extends Controller
                   $validatedData = $request->validated();
                   $this->authService->processLogin($validatedData);
 
-                  return redirect()->route('funcionarios.index');
+                  return redirect()->route('home');
             } catch (ValidationException $e) {
                   return redirect()->back()
                         ->withErrors($e->errors())

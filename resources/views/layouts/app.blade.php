@@ -13,7 +13,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-scroll bg-light shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ route('users.painel') }}">
+            <a class="navbar-brand fw-bold" href="{{ route('home') }}">
                 LaraPonto
             </a>
 
@@ -24,27 +24,30 @@
 
             <div class="collapse navbar-collapse" id="navbarSistema">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    @if (Auth::check() && Auth::user()->tipo_usuario == 1)
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
-                                href="{{ route('users.painel') }}">
-                                Usuários
-                            </a>
-                        </li>
+                    @auth
+                        @if (Auth::user()->tipo_usuario == 1)
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
+                                    href="{{ route('users.painel') }}">
+                                    Usuários
+                                </a>
+                            </li>
+                        @endif
+                        @if (in_array(Auth::user()->tipo_usuario, [1, 2]))
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('funcionarios.*') ? 'active' : '' }}"
+                                    href="{{ route('funcionarios.index') }}">
+                                    Funcionários
+                                </a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('funcionarios.*') ? 'active' : '' }}"
-                                href="{{ route('funcionarios.index') }}">
-                                Funcionários
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('setores.*') ? 'active' : '' }}"
-                                href="{{ route('setores.index') }}">
-                                Setores
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('setores.*') ? 'active' : '' }}"
+                                    href="{{ route('setores.index') }}">
+                                    Setores
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,11 +67,13 @@
                                 </li>
                             </ul>
                         </li>
-                    @endif
+                    @endauth
                 </ul>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
+                @auth
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                @endauth
             </div>
         </div>
     </nav>

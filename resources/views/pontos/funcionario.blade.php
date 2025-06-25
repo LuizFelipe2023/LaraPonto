@@ -33,11 +33,6 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="acoesDropdown">
                             <li>
-                                <a class="dropdown-item" href="{{ route('funcionarios.index') }}">
-                                    Voltar para Funcionários
-                                </a>
-                            </li>
-                            <li>
                                 <a class="dropdown-item" href="{{ route('pontos.createEntrada', $funcionario->id) }}">
                                     Registrar Entrada
                                 </a>
