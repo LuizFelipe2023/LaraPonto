@@ -3,11 +3,22 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SetorController;
 use App\Http\Controllers\FuncionarioController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return redirect()->route('funcionarios.index'); 
+    }
+
+    return redirect()->route('login');
 });
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/profile',[AuthController::class,'profile'])->name('profile')->middleware('auth');
+Route::post('/password/update',[AuthController::class,'updatePassword'])->name('password.update')->middleware('auth');
 
 Route::prefix('users')->name('users.')->group(function(){
      Route::get('/painel',[UserController::class,'painelUsuarios'])->name('painel');
