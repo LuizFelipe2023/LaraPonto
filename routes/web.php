@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [FaltaController::class, 'edit'])->name('edit');
             Route::put('/{id}/update', [FaltaController::class, 'update'])->name('update');
             Route::delete('/{id}', [FaltaController::class, 'destroy'])->name('destroy');
+            Route::get('/pdf',[FaltaController::class,'pdfFaltas'])->name('pdf');
         });
 
         Route::prefix('atrasos')->name('atrasos.')->group(function () {
@@ -79,6 +80,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [AtrasoController::class, 'edit'])->name('edit');
             Route::put('/{id}/update', [AtrasoController::class, 'update'])->name('update');
             Route::delete('/{id}', [AtrasoController::class, 'destroy'])->name('destroy');
+            Route::get('/pdf',[AtrasoController::class,'pdfAtrasos'])->name('pdf');
         });
     });
 

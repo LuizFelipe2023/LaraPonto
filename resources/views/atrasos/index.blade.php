@@ -30,9 +30,25 @@
                 @endif
 
                 <div class="d-flex justify-content-center mb-3">
-                    <a href="{{ route('atrasos.create') }}" class="btn btn-sm btn-success shadow-sm">
-                        <i class="bi bi-plus-circle me-2"></i>Novo Atraso
-                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-white shadow-sm dropdown-toggle" type="button"
+                            id="acoesAtrasosDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: #000;">
+                            Ações
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="acoesAtrasosDropdown">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('atrasos.create') }}">
+                                    <i class="bi bi-plus-circle me-2"></i>Novo Atraso
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('atrasos.pdf') }}"
+                                    target="_blank">
+                                    <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>Gerar PDF de Atrasos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -70,16 +86,14 @@
                                             <ul class="dropdown-menu" aria-labelledby="dropdownAtraso{{ $atraso->id }}">
                                                 <li>
                                                     <a class="dropdown-item d-flex align-items-center"
-                                                       href="{{ route('atrasos.edit', $atraso->id) }}">
+                                                        href="{{ route('atrasos.edit', $atraso->id) }}">
                                                         <i class="bi bi-pencil-fill me-2"></i>Editar
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <button class="dropdown-item d-flex align-items-center text-danger"
-                                                        type="button"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#confirmDeleteModal"
-                                                        data-atrasoid="{{ $atraso->id }}">
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#confirmDeleteModal" data-atrasoid="{{ $atraso->id }}">
                                                         <i class="bi bi-trash-fill me-2"></i>Excluir
                                                     </button>
                                                 </li>
@@ -87,10 +101,8 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <form id="delete-form-{{ $atraso->id }}"
-                                      action="{{ route('atrasos.destroy', $atraso->id) }}"
-                                      method="POST"
-                                      class="d-none">
+                                <form id="delete-form-{{ $atraso->id }}" action="{{ route('atrasos.destroy', $atraso->id) }}"
+                                    method="POST" class="d-none">
                                     @csrf
                                     @method('DELETE')
                                 </form>

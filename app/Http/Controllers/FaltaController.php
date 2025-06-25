@@ -82,4 +82,14 @@ class FaltaController extends Controller
             return back()->with('error', 'Não foi possível excluir a falta.');
         }
     }
+
+    public function pdfFaltas()
+    {
+           try{
+              return $this->faltaService->pdfFaltasGeral();
+           }catch(Exception $e){
+              Log::error('Houve um erro inesperado ao realizar o download de pdf das faltas',['error' => $e->getMessage()]);
+              return redirect()->back()->with('Erro ao realizar o download do pdf de faltas');
+           }
+    }
 }

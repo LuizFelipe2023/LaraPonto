@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Falta;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection;
 
 class FaltaService
@@ -51,5 +52,12 @@ class FaltaService
     {
         $falta = $this->getFaltaById($id);
         return $falta->delete();
+    }
+
+    public function pdfFaltasGeral()
+    {
+           $faltas = $this->getAllFaltas();
+           $pdf = Pdf::loadView('pdfs.faltas-geral',compact('faltas'));
+           return $pdf->download('faltas-geral.pdf');
     }
 }

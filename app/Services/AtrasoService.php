@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Atraso;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection;
 
 class AtrasoService
@@ -50,5 +51,12 @@ class AtrasoService
     {
         $atraso = $this->getAtrasoById($id);
         return $atraso->delete();
+    }
+
+    public function pdfAtrasosGeral()
+    {
+           $atrasos = $this->getAllAtrasos();
+           $pdf = Pdf::loadView('pdfs.atrasos-geral',compact('atrasos'));
+           return $pdf->download('atrasos-geral.pdf');
     }
 }

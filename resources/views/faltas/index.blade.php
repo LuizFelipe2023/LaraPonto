@@ -28,10 +28,27 @@
                 @endif
 
                 <div class="d-flex justify-content-center mb-3">
-                    <a href="{{ route('faltas.create') }}" class="btn btn-sm btn-success shadow-sm">
-                        <i class="bi bi-plus-circle me-2"></i>Nova Falta
-                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-white shadow-sm dropdown-toggle" type="button"
+                            id="acoesFaltasDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: #000;">
+                            Ações
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="acoesFaltasDropdown">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('faltas.create') }}">
+                                    <i class="bi bi-plus-circle me-2"></i>Nova Falta
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('faltas.pdf') }}"
+                                    target="_blank">
+                                    <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>Gerar PDF de Faltas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle bg-white" id="faltasTable">

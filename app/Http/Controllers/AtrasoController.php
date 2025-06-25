@@ -78,4 +78,14 @@ class AtrasoController extends Controller
             return back()->with('error', 'Não foi possível excluir o atraso.');
         }
     }
+
+    public function pdfAtrasos()
+    {
+           try{
+              return $this->atrasoService->pdfAtrasosGeral();
+           }catch(Exception $e){
+              Log::error('Houve um erro inesperado ao realizar o download de pdf dos atrasos',['error' => $e->getMessage()]);
+              return redirect()->back()->with('Erro ao realizar o download do pdf de atrasos');
+           }
+    }
 }
