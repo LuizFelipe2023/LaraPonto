@@ -92,4 +92,16 @@ class PontoService
         return $pdf->download('pontos_' . $funcionario->usuario->name . '.pdf');
     }
 
+    public function pdfsPontosGeral()
+    {
+        $pontos = Ponto::select('pontos.*')
+            ->join('funcionarios', 'pontos.funcionario_id', '=', 'funcionarios.id')
+            ->join('setores', 'funcionarios.setor_id', '=', 'setores.id')
+            ->with(['funcionario.setor', 'funcionario.usuario'])
+            ->orderBy('setores.nome')
+            ->get();
+        $pdf = Pdf::loadView('pdfs.pontos-geral', compact('pontos'));
+        return $pdf->download('pontos-gerais.pdf');
+    }
+
 }

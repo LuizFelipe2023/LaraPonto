@@ -69,5 +69,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/saida/{pontoId}', [PontoController::class, 'storeSaida'])->name('storeSaida');
         Route::get('/funcionario/{id}', [PontoController::class, 'pontosFuncionario'])->name('funcionario');
         Route::get('/funcionario/{id}/pdf', [PontoController::class, 'pdfPontosFuncionario'])->name('pdfFuncionario');
+        Route::get('/funcionarios/pdf-geral', [PontoController::class, 'pdfPontosGeral'])->name('pdfGeral');
     });
 });

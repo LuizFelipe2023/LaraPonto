@@ -30,11 +30,31 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
 
-                <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('funcionarios.index') }}" class="btn btn-primary me-2">
-                        Voltar para Funcionários
-                    </a>
+                <div class="d-flex justify-content-center mb-3">
+                    <div class="dropdown">
+                        <button class="btn btn-white border shadow-sm dropdown-toggle d-flex align-items-center"
+                            type="button" id="acoesDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                            style="color: #000;">
+                            Ações
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="acoesDropdown">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center"
+                                    href="{{ route('pontos.pdfGeral') }}" target="_blank">
+                                    <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>
+                                    Gerar PDF de Pontos
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('funcionarios.index') }}" class="dropdown-item d-flex align-items-center">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Voltar para Funcionários
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle bg-white" id="pontosTable">
@@ -67,8 +87,7 @@
                                                 <li>
                                                     <button class="dropdown-item d-flex align-items-center text-danger"
                                                         type="button" data-bs-toggle="modal"
-                                                        data-bs-target="#confirmDeleteModal"
-                                                        data-pontoid="{{ $ponto->id }}">
+                                                        data-bs-target="#confirmDeleteModal" data-pontoid="{{ $ponto->id }}">
                                                         <i class="bi bi-trash-fill me-2"></i> Excluir
                                                     </button>
                                                 </li>
