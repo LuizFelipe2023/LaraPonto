@@ -111,6 +111,12 @@
                                                         <i class="bi bi-trash-fill me-2"></i> Excluir
                                                     </button>
                                                 </li>
+                                                <li>
+                                                    <a class="dropdown-item d-flex align-items-center"
+                                                        href="{{ route('pontos.funcionario', $funcionario->id) }}">
+                                                        <i class="bi bi-clock-history me-2"></i> Ver Pontos
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                         <form id="delete-form-{{ $funcionario->id }}"
