@@ -14,7 +14,21 @@ class FuncionarioService
 
     public function getAllFuncionarios()
     {
-        return Funcionario::all();
+        $user = auth()->user();
+
+        if ($user->tipo_usuario == 1) {
+            return Funcionario::with('setor')->get();
+        }
+
+        if ($user->tipo_usuario == 2) {
+            $setoresIds = $user->setoresGerenciados->pluck('id')->toArray();
+
+            return Funcionario::with('setor')
+                ->whereIn('setor_id', $setoresIds)
+                ->get();
+        }
+
+        abort(403, 'Acesso não autorizado.');
     }
 
     public function insertFuncionario(array $data)

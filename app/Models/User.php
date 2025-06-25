@@ -49,11 +49,16 @@ class User extends Authenticatable
 
     public function tipoUsuario()
     {
-           return $this->belongsTo(TipoUsuario::class,'tipo_usuario');
+        return $this->belongsTo(TipoUsuario::class, 'tipo_usuario');
     }
 
     public function funcionario()
     {
-           return $this->hasOne(Funcionario::class);
+        return $this->hasOne(Funcionario::class);
+    }
+
+    public function setoresGerenciados()
+    {
+        return $this->hasMany(Setor::class, 'gestor_id');
     }
 }

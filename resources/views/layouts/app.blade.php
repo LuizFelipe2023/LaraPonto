@@ -32,15 +32,6 @@
                                     Usuários
                                 </a>
                             </li>
-                        @endif
-                        @if (in_array(Auth::user()->tipo_usuario, [1, 2]))
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('funcionarios.*') ? 'active' : '' }}"
-                                    href="{{ route('funcionarios.index') }}">
-                                    Funcionários
-                                </a>
-                            </li>
-
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('setores.*') ? 'active' : '' }}"
                                     href="{{ route('setores.index') }}">
@@ -48,6 +39,29 @@
                                 </a>
                             </li>
                         @endif
+
+                        @if (in_array(Auth::user()->tipo_usuario, [1, 2]))
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('pontos.index') ? 'active' : '' }}"
+                                    href="{{ route('pontos.index') }}">
+                                    Pontos dos Funcionários
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('funcionarios.*') ? 'active' : '' }}"
+                                    href="{{ route('funcionarios.index') }}">
+                                    Funcionários
+                                </a>
+                            </li>
+                        @endif
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('pontos.funcionario',Auth::user()->funcionario->id) ? 'active' : '' }}"
+                                href="{{ route('pontos.funcionario',Auth::user()->funcionario->id) }}">
+                                Meus Pontos
+                            </a>
+                        </li>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -69,12 +83,14 @@
                         </li>
                     @endauth
                 </ul>
+
                 @auth
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 @endauth
             </div>
+
         </div>
     </nav>
 

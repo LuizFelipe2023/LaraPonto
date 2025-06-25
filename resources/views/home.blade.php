@@ -22,7 +22,7 @@
                     ],
                     [
                         'route' => 'pontos.index', 
-                        'title' => 'Pontos', 
+                        'title' => 'Ponto dos Funcionários', 
                         'subtitle' => 'Controle os registros de entrada e saída.',
                         'banner' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80'
                     ],
@@ -69,15 +69,9 @@
                     ],
                     [
                         'route' => 'pontos.index', 
-                        'title' => 'Pontos', 
+                        'title' => 'Pontos dos Funcionários', 
                         'subtitle' => 'Controle os registros de entrada e saída.',
                         'banner' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80'
-                    ],
-                    [
-                        'route' => 'setores.index', 
-                        'title' => 'Setores', 
-                        'subtitle' => 'Organize os setores da organização.',
-                        'banner' => 'https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=400&q=80'
                     ],
                 ];
             @endphp

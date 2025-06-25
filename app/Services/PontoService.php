@@ -11,12 +11,25 @@ class PontoService
 {
     public function getPontos(): Collection
     {
-        return Ponto::with(['funcionario.setor'])
+        $user = auth()->user();
+
+        $query = Ponto::with(['funcionario.setor'])
             ->join('funcionarios', 'pontos.funcionario_id', '=', 'funcionarios.id')
             ->join('setores', 'funcionarios.setor_id', '=', 'setores.id')
             ->orderBy('setores.nome')
-            ->select('pontos.*')
-            ->get();
+            ->select('pontos.*');
+
+        if ($user->tipo_usuario == 2) {
+            $setoresIds = $user->setoresGerenciados->pluck('id')->toArray();
+
+            $query->whereIn('funcionarios.setor_id', $setoresIds);
+        }
+
+        if ($user->tipo_usuario == 3) {
+            abort(403, 'Acesso não autorizado.');
+        }
+
+        return $query->get();
     }
 
     public function getPontoById(int $id): Ponto
