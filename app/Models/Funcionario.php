@@ -35,4 +35,9 @@ class Funcionario extends Model
     {
         return $this->belongsTo(StatusFuncionario::class, 'status_id');
     }
+
+    public function pontos()
+    {
+           return $this->hasMany(Ponto::class);
+    }
 }
