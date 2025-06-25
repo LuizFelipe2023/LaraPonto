@@ -4,6 +4,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SetorController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PontoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -45,4 +46,13 @@ Route::prefix('funcionarios')->name('funcionarios.')->group(function () {
     Route::get('/edit/{id}', [FuncionarioController::class, 'editFuncionario'])->name('edit');
     Route::put('/update/{id}', [FuncionarioController::class, 'updateFuncionario'])->name('update');
     Route::delete('/delete/{id}', [FuncionarioController::class, 'deleteFuncionario'])->name('delete');
+});
+
+Route::prefix('pontos')->group(function () {
+    Route::get('/', [PontoController::class, 'index'])->name('pontos.index');
+    Route::get('/entrada/{funcionarioId}', [PontoController::class, 'createEntrada'])->name('pontos.createEntrada');
+    Route::post('/entrada/{funcionarioId}', [PontoController::class, 'storeEntrada'])->name('pontos.storeEntrada');
+    Route::get('/saida/{funcionarioId}', [PontoController::class, 'createSaida'])->name('pontos.createSaida');
+    Route::post('/saida/{pontoId}', [PontoController::class, 'storeSaida'])->name('pontos.storeSaida');
+    Route::delete('/{id}', [PontoController::class, 'deletePonto'])->name('pontos.delete');
 });
