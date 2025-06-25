@@ -34,15 +34,6 @@ Route::middleware('auth')->group(function () {
             Route::put('/{id}/update',[UserController::class,'updateUser'])->name('update');
             Route::delete('/{id}/delete',[UserController::class,'deleteUser'])->name('delete');
         });
-
-        Route::prefix('setores')->name('setores.')->group(function () {
-            Route::get('/', [SetorController::class, 'index'])->name('index');
-            Route::get('/create', [SetorController::class, 'createSetor'])->name('create');
-            Route::post('/store', [SetorController::class, 'storeSetor'])->name('store');
-            Route::get('/{id}/edit', [SetorController::class, 'editSetor'])->name('edit');
-            Route::put('/{id}/update', [SetorController::class, 'updateSetor'])->name('update');
-            Route::delete('/{id}/delete', [SetorController::class, 'deleteSetor'])->name('delete');
-        });
     });
 
     Route::middleware([CheckRole::class])->group(function () {
@@ -58,6 +49,16 @@ Route::middleware('auth')->group(function () {
         Route::prefix('pontos')->name('pontos.')->group(function () {
             Route::get('/', [PontoController::class, 'index'])->name('index');
             Route::delete('/{id}', [PontoController::class, 'deletePonto'])->name('delete');
+        });
+
+        
+        Route::prefix('setores')->name('setores.')->group(function () {
+            Route::get('/', [SetorController::class, 'index'])->name('index');
+            Route::get('/create', [SetorController::class, 'createSetor'])->name('create');
+            Route::post('/store', [SetorController::class, 'storeSetor'])->name('store');
+            Route::get('/{id}/edit', [SetorController::class, 'editSetor'])->name('edit');
+            Route::put('/{id}/update', [SetorController::class, 'updateSetor'])->name('update');
+            Route::delete('/{id}/delete', [SetorController::class, 'deleteSetor'])->name('delete');
         });
     });
 
