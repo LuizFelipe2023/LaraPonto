@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Funcionario;
 use App\Models\Ponto;
 use Illuminate\Database\Eloquent\Collection;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PontoService
 {
@@ -79,7 +81,15 @@ class PontoService
         return Ponto::where('funcionario_id', $funcionarioId)
             ->whereNull('hora_saida')
             ->orderBy('data', 'desc')
-            ->first();  
+            ->first();
+    }
+
+    public function pdfPontosFuncionario($id)
+    {
+        $funcionario = Funcionario::findOrFail($id);
+        $pontos = Ponto::where('funcionario_id', $funcionario->id)->get();
+        $pdf = Pdf::loadView('pdfs.pontos-funcionario', compact('funcionario', 'pontos'));
+        return $pdf->download('pontos_' . $funcionario->usuario->name . '.pdf');
     }
 
 }

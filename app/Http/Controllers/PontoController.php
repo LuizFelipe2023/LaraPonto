@@ -116,5 +116,14 @@ class PontoController extends Controller
         }
     }
 
+    public function pdfPontosFuncionario($id)
+    {
+        try {
+            return $this->pontoService->pdfPontosFuncionario($id);
+        } catch (Exception $e) {
+            Log::error('Erro ao gerar PDF de pontos: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Não foi possível gerar o PDF.');
+        }
+    }
 
 }

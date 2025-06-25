@@ -33,8 +33,17 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="acoesDropdown">
                             <li>
-                                <a class="dropdown-item" href="{{ route('pontos.createEntrada', $funcionario->id) }}">
+                                <a class="dropdown-item d-flex align-items-center"
+                                    href="{{ route('pontos.createEntrada', $funcionario->id) }}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
                                     Registrar Entrada
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center"
+                                    href="{{ route('pontos.pdfFuncionario', $funcionario->id) }}" target="_blank">
+                                    <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>
+                                    Gerar PDF de Pontos
                                 </a>
                             </li>
                         </ul>
