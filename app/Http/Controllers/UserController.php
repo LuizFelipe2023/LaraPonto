@@ -6,21 +6,25 @@ use App\Http\Requests\InsertUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\TipoUsuarioService;
 use App\Services\UserService;
+use App\Services\AuditService; 
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth; 
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
     protected UserService $userService;
     protected TipoUsuarioService $tipoUsuarioService;
+    protected AuditService $auditService; 
 
-    public function __construct(UserService $userService, TipoUsuarioService $tipoUsuarioService)
+    public function __construct(UserService $userService, TipoUsuarioService $tipoUsuarioService, AuditService $auditService)
     {
         $this->userService = $userService;
         $this->tipoUsuarioService = $tipoUsuarioService;
+        $this->auditService = $auditService; 
     }
 
     public function painelUsuarios(): View|RedirectResponse
@@ -51,7 +55,14 @@ class UserController extends Controller
         $validatedData = $request->validated();
         try {
             Log::info('Inserção de novo usuário.', ['data' => $validatedData]);
-            $this->userService->insertUser($validatedData);
+            $user = $this->userService->insertUser($validatedData);
+
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Inserção de usuário',
+                'detalhes' => 'Usuário ID: ' . ($user->id ?? 'N/A') . ', Email: ' . ($validatedData['email'] ?? ''),
+            ]);
+
             return redirect()->route('users.painel')->with('success', 'Usuário cadastrado com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao cadastrar usuário.', ['error' => $e->getMessage(), 'data' => $validatedData]);
@@ -77,6 +88,13 @@ class UserController extends Controller
         $validatedData = $request->validated();
         try {
             $this->userService->updateUser($id, $validatedData);
+
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Atualização de usuário',
+                'detalhes' => 'Usuário ID: ' . $id,
+            ]);
+
             return redirect()->route('users.painel')->with('success', 'Usuário atualizado com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao atualizar usuário.', ['error' => $e->getMessage(), 'id' => $id, 'data' => $validatedData]);
@@ -88,6 +106,13 @@ class UserController extends Controller
     {
         try {
             $this->userService->destroyUser($id);
+
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Exclusão de usuário',
+                'detalhes' => 'Usuário ID: ' . $id,
+            ]);
+
             return redirect()->back()->with('success', 'Usuário deletado com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao deletar usuário.', ['error' => $e->getMessage(), 'id' => $id]);

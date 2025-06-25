@@ -9,10 +9,10 @@ class AuditService
 {
     public function getAllAudits()
     {
-        return Audit::select('acao', \DB::raw('count(*) as total'))
-            ->groupBy('acao')
+        return Audit::select('user_id', 'acao', \DB::raw('count(*) as total'))
+            ->with('user:id,name') 
+            ->groupBy('user_id', 'acao')
             ->get();
-
     }
 
     public function insertAudit(array $data): Audit

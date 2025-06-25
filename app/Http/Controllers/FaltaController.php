@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Services\FaltaService;
+use App\Services\FuncionarioService;
+use App\Services\AuditService;
 use App\Http\Requests\InsertFaltaRequest;
 use App\Http\Requests\UpdateFaltaRequest;
-use App\Services\FuncionarioService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
@@ -15,11 +17,13 @@ class FaltaController extends Controller
 {
     protected FaltaService $faltaService;
     protected FuncionarioService $funcionarioService;
+    protected AuditService $auditService;
 
-    public function __construct(FaltaService $faltaService, FuncionarioService $funcionarioService)
+    public function __construct(FaltaService $faltaService, FuncionarioService $funcionarioService, AuditService $auditService)
     {
         $this->faltaService = $faltaService;
         $this->funcionarioService = $funcionarioService;
+        $this->auditService = $auditService;
     }
 
     public function index(): View|RedirectResponse
@@ -42,7 +46,14 @@ class FaltaController extends Controller
     public function store(InsertFaltaRequest $request): RedirectResponse
     {
         try {
-            $this->faltaService->storeFalta($request->validated());
+            $falta = $this->faltaService->storeFalta($request->validated());
+
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Inserção de falta',
+                'detalhes' => 'Falta ID: ' . ($falta->id ?? 'N/A'),
+            ]);
+
             return redirect()->route('faltas.index')->with('success', 'Falta registrada com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao criar falta', ['error' => $e->getMessage()]);
@@ -65,6 +76,13 @@ class FaltaController extends Controller
     {
         try {
             $this->faltaService->updateFalta($id, $request->validated());
+
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Atualização de falta',
+                'detalhes' => 'Falta ID: ' . $id,
+            ]);
+
             return redirect()->route('faltas.index')->with('success', 'Falta atualizada com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao atualizar falta', ['id' => $id, 'error' => $e->getMessage()]);
@@ -76,6 +94,13 @@ class FaltaController extends Controller
     {
         try {
             $this->faltaService->destroyFalta($id);
+
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Exclusão de falta',
+                'detalhes' => 'Falta ID: ' . $id,
+            ]);
+
             return redirect()->route('faltas.index')->with('success', 'Falta excluída com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao excluir falta', ['id' => $id, 'error' => $e->getMessage()]);
@@ -85,11 +110,11 @@ class FaltaController extends Controller
 
     public function pdfFaltas()
     {
-           try{
-              return $this->faltaService->pdfFaltasGeral();
-           }catch(Exception $e){
-              Log::error('Houve um erro inesperado ao realizar o download de pdf das faltas',['error' => $e->getMessage()]);
-              return redirect()->back()->with('Erro ao realizar o download do pdf de faltas');
-           }
+        try {
+            return $this->faltaService->pdfFaltasGeral();
+        } catch(Exception $e) {
+            Log::error('Houve um erro inesperado ao realizar o download de pdf das faltas', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Erro ao realizar o download do pdf de faltas');
+        }
     }
 }

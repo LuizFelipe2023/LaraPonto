@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AuditService;
 use App\Services\FuncionarioService;
 use App\Services\PontoService;
 use Exception;
@@ -11,15 +12,17 @@ use Log;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\RegistrarEntradaRequest;
 use App\Http\Requests\RegistrarSaidaRequest;
+use Illuminate\Support\Facades\Auth;
 
 class PontoController extends Controller
 {
-    protected $pontoService, $funcionarioService;
+    protected $pontoService, $funcionarioService, $auditService;
 
-    public function __construct(PontoService $pontoService, FuncionarioService $funcionarioService)
+    public function __construct(PontoService $pontoService, FuncionarioService $funcionarioService, AuditService $auditService)
     {
         $this->pontoService = $pontoService;
         $this->funcionarioService = $funcionarioService;
+        $this->auditService = $auditService;
     }
 
     public function index()
@@ -46,10 +49,17 @@ class PontoController extends Controller
             return redirect()->back()->with('error', 'Erro ao acessar tela de entrada.');
         }
     }
+
     public function storeEntrada(RegistrarEntradaRequest $request): RedirectResponse
     {
         try {
             $ponto = $this->pontoService->insertPonto($request->validated());
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Registro de entrada',
+                'detalhes' => 'Ponto ID: ' . ($ponto->id ?? 'N/A') . ', Funcionário ID: ' . $ponto->funcionario_id,
+            ]);
+
             return redirect()->route('pontos.funcionario', $ponto->funcionario_id)
                 ->with('success', 'Entrada registrada com sucesso!');
         } catch (Exception $e) {
@@ -83,6 +93,13 @@ class PontoController extends Controller
         try {
             $this->pontoService->updatePonto($pontoId, $request->validated());
             $ponto = $this->pontoService->getPontoById($pontoId);
+
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Registro de saída',
+                'detalhes' => 'Ponto ID: ' . $pontoId . ', Funcionário ID: ' . $ponto->funcionario_id,
+            ]);
+
             return redirect()->route('pontos.funcionario', $ponto->funcionario_id)
                 ->with('success', 'Saída registrada com sucesso!');
         } catch (Exception $e) {
@@ -94,13 +111,21 @@ class PontoController extends Controller
     public function deletePonto($id): RedirectResponse
     {
         try {
+            $ponto = $this->pontoService->getPontoById($id);
             $this->pontoService->destroyPonto($id);
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Exclusão de ponto',
+                'detalhes' => 'Ponto ID: ' . $id . ', Funcionário ID: ' . $ponto->funcionario_id,
+            ]);
+
             return redirect()->back()->with('success', 'Ponto deletado com sucesso');
         } catch (Exception $e) {
             Log::error('Erro ao excluir ponto', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Erro ao excluir ponto. Tente novamente.');
         }
     }
+
     public function pontosFuncionario($id)
     {
         try {
@@ -126,7 +151,7 @@ class PontoController extends Controller
         }
     }
 
-    
+
     public function pdfPontosGeral()
     {
         try {

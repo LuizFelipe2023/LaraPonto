@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Services\AtrasoService;
 use App\Http\Requests\InsertAtrasoRequest;
 use App\Http\Requests\UpdateAtrasoRequest;
+use App\Services\AuditService;
 use App\Services\FuncionarioService;
+use Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
@@ -15,11 +17,13 @@ class AtrasoController extends Controller
 {
     protected AtrasoService $atrasoService;
     protected FuncionarioService $funcionarioService;
+    protected AuditService $auditService;
 
-    public function __construct(AtrasoService $atrasoService, FuncionarioService $funcionarioService)
+    public function __construct(AtrasoService $atrasoService, FuncionarioService $funcionarioService, AuditService $auditService)
     {
         $this->atrasoService = $atrasoService;
         $this->funcionarioService = $funcionarioService;
+        $this->auditService = $auditService;
     }
 
     public function index(): View|RedirectResponse
@@ -39,15 +43,21 @@ class AtrasoController extends Controller
             $funcionarios = $this->funcionarioService->getAllFuncionarios();
             return view('atrasos.create', compact('funcionarios'));
         } catch (Exception $e) {
-            Log::error('Houve um erro ao abrir a tela de inserção de atraso',['error' => $e->getMessage()]);
-            return redirect()->back()->with('error','Houve um erro ao abrir a tela de inserção de atraso.');
+            Log::error('Houve um erro ao abrir a tela de inserção de atraso', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Houve um erro ao abrir a tela de inserção de atraso.');
         }
     }
 
     public function store(InsertAtrasoRequest $request): RedirectResponse
     {
         try {
-            $this->atrasoService->storeAtraso($request->validated());
+            $atraso = $this->atrasoService->storeAtraso($request->validated());
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Inserção de atraso',
+                'detalhes' => 'Atraso ID: ' . $atraso->id,
+            ]);
+
             return redirect()->route('atrasos.index')->with('success', 'Atraso registrado com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao criar atraso', ['error' => $e->getMessage()]);
@@ -70,6 +80,12 @@ class AtrasoController extends Controller
     {
         try {
             $this->atrasoService->updateAtraso($id, $request->validated());
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Atualização de atraso',
+                'detalhes' => 'Atraso ID: ' . $id,
+            ]);
+
             return redirect()->route('atrasos.index')->with('success', 'Atraso atualizado com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao atualizar atraso', ['id' => $id, 'error' => $e->getMessage()]);
@@ -81,6 +97,12 @@ class AtrasoController extends Controller
     {
         try {
             $this->atrasoService->destroyAtraso($id);
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Exclusão de atraso',
+                'detalhes' => 'Atraso ID: ' . $id,
+            ]);
+
             return redirect()->route('atrasos.index')->with('success', 'Atraso excluído com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao excluir atraso', ['id' => $id, 'error' => $e->getMessage()]);

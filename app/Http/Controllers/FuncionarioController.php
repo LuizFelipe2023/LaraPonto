@@ -8,20 +8,29 @@ use App\Services\FuncionarioService;
 use App\Services\SetorService;
 use App\Services\StatusFuncionarioService;
 use App\Services\UserService;
+use App\Services\AuditService;  // <-- adiciona aqui
 use Exception;
 use Illuminate\Http\Request;
-use Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FuncionarioController extends Controller
 {
-    protected $setorService, $funcionarioService, $userService, $statusFuncionarioService;
+    protected $setorService, $funcionarioService, $userService, $statusFuncionarioService, $auditService;
 
-    public function __construct(SetorService $setorService, FuncionarioService $funcionarioService, UserService $userService, StatusFuncionarioService $statusFuncionarioService)
+    public function __construct(
+        SetorService $setorService,
+        FuncionarioService $funcionarioService,
+        UserService $userService,
+        StatusFuncionarioService $statusFuncionarioService,
+        AuditService $auditService   // <-- adiciona aqui
+    )
     {
         $this->setorService = $setorService;
         $this->funcionarioService = $funcionarioService;
         $this->userService = $userService;
         $this->statusFuncionarioService = $statusFuncionarioService;
+        $this->auditService = $auditService;  // <-- adiciona aqui
     }
 
     public function indexFuncionarios()
@@ -54,7 +63,15 @@ class FuncionarioController extends Controller
     {
         try {
             $validatedData = $request->validated();
-            $this->funcionarioService->insertFuncionario($validatedData);
+            $funcionario = $this->funcionarioService->insertFuncionario($validatedData);
+
+            // Auditoria
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Inserção de funcionário',
+                'detalhes' => 'Funcionário ID: ' . ($funcionario->id ?? 'N/A'),
+            ]);
+
             return redirect()->route('funcionarios.index')->with('success', 'Funcionário criado com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao criar funcionário', ['error' => $e->getMessage()]);
@@ -83,6 +100,14 @@ class FuncionarioController extends Controller
             if (!$updated) {
                 return redirect()->back()->with('error', 'Não foi possível atualizar o funcionário.');
             }
+
+            // Auditoria
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Atualização de funcionário',
+                'detalhes' => 'Funcionário ID: ' . $id,
+            ]);
+
             return redirect()->route('funcionarios.index')->with('success', 'Funcionário atualizado com sucesso.');
         } catch (Exception $e) {
             Log::error('Erro ao atualizar funcionário', ['error' => $e->getMessage()]);
@@ -98,6 +123,13 @@ class FuncionarioController extends Controller
             if (!$deleted) {
                 return redirect()->route('funcionarios.index')->with('error', 'Não foi possível excluir o funcionário.');
             }
+
+            // Auditoria
+            $this->auditService->insertAudit([
+                'user_id' => Auth::user()->id,
+                'acao' => 'Exclusão de funcionário',
+                'detalhes' => 'Funcionário ID: ' . $id,
+            ]);
 
             return redirect()->route('funcionarios.index')->with('success', 'Funcionário excluído com sucesso.');
         } catch (Exception $e) {
