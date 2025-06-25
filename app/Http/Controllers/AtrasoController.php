@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\AtrasoService;
 use App\Http\Requests\InsertAtrasoRequest;
 use App\Http\Requests\UpdateAtrasoRequest;
+use App\Services\FuncionarioService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
@@ -13,10 +14,12 @@ use Exception;
 class AtrasoController extends Controller
 {
     protected AtrasoService $atrasoService;
+    protected FuncionarioService $funcionarioService;
 
-    public function __construct(AtrasoService $atrasoService)
+    public function __construct(AtrasoService $atrasoService, FuncionarioService $funcionarioService)
     {
         $this->atrasoService = $atrasoService;
+        $this->funcionarioService = $funcionarioService;
     }
 
     public function index(): View|RedirectResponse
@@ -30,9 +33,15 @@ class AtrasoController extends Controller
         }
     }
 
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
-        return view('atrasos.create');
+        try {
+            $funcionarios = $this->funcionarioService->getAllFuncionarios();
+            return view('atrasos.create', compact('funcionarios'));
+        } catch (Exception $e) {
+            Log::error('Houve um erro ao abrir a tela de inserção de atraso',['error' => $e->getMessage()]);
+            return redirect()->back()->with('error','Houve um erro ao abrir a tela de inserção de atraso.');
+        }
     }
 
     public function store(InsertAtrasoRequest $request): RedirectResponse
@@ -81,11 +90,11 @@ class AtrasoController extends Controller
 
     public function pdfAtrasos()
     {
-           try{
-              return $this->atrasoService->pdfAtrasosGeral();
-           }catch(Exception $e){
-              Log::error('Houve um erro inesperado ao realizar o download de pdf dos atrasos',['error' => $e->getMessage()]);
-              return redirect()->back()->with('Erro ao realizar o download do pdf de atrasos');
-           }
+        try {
+            return $this->atrasoService->pdfAtrasosGeral();
+        } catch (Exception $e) {
+            Log::error('Houve um erro inesperado ao realizar o download de pdf dos atrasos', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('Erro ao realizar o download do pdf de atrasos');
+        }
     }
 }
