@@ -58,6 +58,7 @@
                                 <th>Data</th>
                                 <th>Hora Entrada</th>
                                 <th>Hora Saída</th>
+                                <th>Horas Extras</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -67,6 +68,7 @@
                                     <td>{{ \Carbon\Carbon::parse($ponto->data)->format('d/m/Y') }}</td>
                                     <td>{{ $ponto->hora_entrada }}</td>
                                     <td>{{ $ponto->hora_saida ?? '-' }}</td>
+                                    <td>{{ number_format($ponto->horas_extras, 2, ',', '.') }} horas</td>
                                     <td>
                                         @if (is_null($ponto->hora_saida))
                                             <a href="{{ route('pontos.createSaida', $funcionario->id) }}"

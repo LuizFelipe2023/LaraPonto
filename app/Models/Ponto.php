@@ -8,7 +8,7 @@ class Ponto extends Model
 {
       protected $table = 'pontos';
 
-      protected $fillable = ['funcionario_id','data','hora_entrada','hora_saida'];
+      protected $fillable = ['funcionario_id','data','hora_entrada','hora_saida','hora_extra'];
 
 
       public function funcionario()
