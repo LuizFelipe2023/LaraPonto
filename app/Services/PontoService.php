@@ -76,16 +76,34 @@ class PontoService
             'hora_saida' => null,
         ]);
     }
-
     public function registrarSaida(int $pontoId): Ponto
     {
         $ponto = $this->getPontoById($pontoId);
+
         if ($ponto->hora_saida !== null) {
             throw new \Exception("Este ponto já possui hora de saída registrada.");
         }
+
         $now = now();
         $ponto->hora_saida = $now->toTimeString();
+
+        $entrada = \Carbon\Carbon::createFromFormat('H:i:s', $ponto->hora_entrada);
+        $saida = \Carbon\Carbon::createFromFormat('H:i:s', $ponto->hora_saida);
+
+        $duracaoTrabalho = $entrada->diffInSeconds($saida);
+        $duracaoHoras = $duracaoTrabalho / 3600;
+
+        $jornada = 8; 
+
+        if ($duracaoHoras > $jornada) {
+            $horaExtra = $duracaoHoras - $jornada;
+        } else {
+            $horaExtra = 0;
+        }
+
+        $ponto->hora_extra = round($horaExtra, 2);
         $ponto->save();
+
         return $ponto;
     }
 
