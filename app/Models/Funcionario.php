@@ -38,6 +38,13 @@ class Funcionario extends Model
 
     public function pontos()
     {
-           return $this->hasMany(Ponto::class);
+        return $this->hasMany(Ponto::class);
     }
+
+    public function ferias()
+    {
+        return $this->hasMany(Ferias::class);
+    }
+
 }
+

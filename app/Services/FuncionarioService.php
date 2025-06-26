@@ -73,4 +73,9 @@ class FuncionarioService
         return $funcionario->pontos()->orderBy('data', 'desc')->orderBy('hora_entrada', 'desc')->get();
     }
 
+    public function feriasFuncionario($id)
+    {
+           return Funcionario::with(['ferias'])->findOrFail($id);
+    }
+
 }

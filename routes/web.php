@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PontoController;
 use App\Http\Controllers\AtrasoController;
 use App\Http\Controllers\FaltaController;
+use App\Http\Controllers\FeriasController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
@@ -88,6 +89,15 @@ Route::middleware('auth')->group(function () {
             Route::put('/{id}/update', [AtrasoController::class, 'update'])->name('update');
             Route::delete('/{id}', [AtrasoController::class, 'destroy'])->name('destroy');
             Route::get('/pdf', [AtrasoController::class, 'pdfAtrasos'])->name('pdf');
+        });
+
+        Route::prefix('ferias')->name('ferias.')->group(function () {
+            Route::get('/', [FeriasController::class, 'index'])->name('index');
+            Route::get('/create', [FeriasController::class, 'createFerias'])->name('create');
+            Route::post('/store', [FeriasController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [FeriasController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [FeriasController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}', [FeriasController::class, 'destroy'])->name('destroy');
         });
     });
 
